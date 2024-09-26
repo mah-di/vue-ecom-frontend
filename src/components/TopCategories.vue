@@ -6,5 +6,5 @@ const categoryStore = useCategoryStore()
 </script>
 
 <template>
-    <HighlightCards title="Top Categories" :items="categoryStore.categories" :isLoading="categoryStore.isLoading" />
+    <HighlightCards title="Top Categories" :items="categoryStore.categories" :isLoading="categoryStore.isLoading" type="categories" />
 </template>

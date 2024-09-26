@@ -1,6 +1,7 @@
 import PolicyPage from '@/views/PolicyPage.vue'
 import HomePage from '@/views/HomePage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import ListingPage from '@/views/ListingPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +15,11 @@ const router = createRouter({
       path: '/:policy',
       name: 'policy',
       component: PolicyPage
+    },
+    {
+      path: '/:type/:identifier',
+      name: 'listing',
+      component: ListingPage
     },
   ],
   scrollBehavior(to, from, savedPosition) {

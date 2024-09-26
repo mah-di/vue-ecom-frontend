@@ -1,6 +1,9 @@
 <script setup>
 import useCategoryStore from '@/stores/categoryStore';
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router';
+
+const route = useRoute()
 
 const openCategories = ref(false)
 const openMenu = ref(false)
@@ -9,6 +12,12 @@ const openSearch = ref(false)
 const categoryStore = useCategoryStore()
 
 onMounted(async () => await categoryStore.get())
+
+watch(() => route.path, () => {
+    openCategories.value = false
+    openMenu.value = false
+    openSearch.value = false
+})
 </script>
 
 <template>
@@ -41,7 +50,7 @@ onMounted(async () => await categoryStore.get())
                         <i class="pi text-sm ml-2" :class="openCategories ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
                     </span>
                     <div v-show="openCategories" class="md:mt-10 md:absolute md:top-100 max-h-[50vh] overflow-auto w-full md:min-w-[150px] md:max-w-[300px] rounded border border-gray-50 bg-white">
-                        <router-link :to="{name: 'home'}" v-for="category in categoryStore.categories" :key="category.id" class="block px-4 py-2 hover:text-rose-600 hover:bg-slate-50 border-b border-b-gray-200 hover:border-b-rose-500">{{ category.name }}</router-link>
+                        <router-link :to="{name: 'listing', params: {type: 'categories', identifier: category.id}}" v-for="category in categoryStore.categories" :key="category.id" class="block px-4 py-2 hover:text-rose-600 hover:bg-slate-50 border-b border-b-gray-200 hover:border-b-rose-500">{{ category.name }}</router-link>
                     </div>
                 </div>
                 <span class="px-4 py-2 hover:text-rose-600 block md:inline hover:bg-slate-50"><i class="pi pi-heart text-sm mr-2"></i>Wish</span>

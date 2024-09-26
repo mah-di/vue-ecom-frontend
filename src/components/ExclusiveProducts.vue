@@ -34,7 +34,7 @@ const setRemark = (remark) => {
 watch(selected, async () => {
     if (remarks[selected.value].isLoading) {
         try {
-            const response = await axios.get(`http://localhost:8000/api/remark/${ encodeURI( selected.value.toLowerCase() ) }/products`)
+            const response = await axios.get(`http://localhost:8000/api/remarks/${ encodeURI( selected.value.toLowerCase() ) }/products`)
             remarks[selected.value].products = response.data.data
         } catch (error) {
             console.error(error);
@@ -57,10 +57,15 @@ watch(selected, async () => {
 
         <ContentLoader v-if="selected.isLoading || remarks[selected.value].isLoading" :loaderClass="'my-[25vh]'" />
 
-        <div class="grid md:grid-cols-4 grid-cols-2 gap-6">
-            <ProductCard v-for="product in products" :key="product.id" :product="product" />
-        </div>
         <h2 class="text-2xl font-bold text-slate-600 text-center my-24" v-if="!selected.isLoading && !remarks[selected.value].isLoading && products.length === 0">Oops, Nothing To Show...</h2>
+
+        <template v-else>
+            <div class="grid md:grid-cols-4 grid-cols-2 gap-6">
+                <ProductCard v-for="product in products" :key="product.id" :product="product" />
+            </div>
+
+            <router-link v-if="selected.value" :to="{ name: 'listing', params: { type: 'remarks', identifier: encodeURI( selected.value.toLowerCase() ) } }" class="block mt-8 py-3 text-center rounded border border-rose-600 text-rose-600 hover:bg-rose-600 hover:text-white">View All</router-link>
+        </template>
     </ContentWrapper>
 </template>
 

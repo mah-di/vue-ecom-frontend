@@ -9,5 +9,5 @@ onMounted(async () => await brandStore.get())
 </script>
 
 <template>
-    <HighlightCards title="Top Brands" :items="brandStore.brands" :isLoading="brandStore.isLoading" />
+    <HighlightCards title="Top Brands" :items="brandStore.brands" :isLoading="brandStore.isLoading" type="brands" />
 </template>

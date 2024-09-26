@@ -6,7 +6,8 @@ import ContentWrapper from './ContentWrapper.vue';
 defineProps({
     title: String,
     items: Array,
-    isLoading: Boolean
+    isLoading: Boolean,
+    type: String
 })
 
 const open = ref(false)
@@ -29,7 +30,7 @@ const open = ref(false)
         <ContentLoader v-if="isLoading" />
 
         <div class="md:grid lg:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-4 mt-6 md:mt-16" :class="open ? 'grid' : 'hidden'">
-            <router-link :to="{name: 'home'}" v-for="item in items" :key="item.id" class="bg-slate-100 p-4">
+            <router-link :to="{name: 'listing', params: {type: type, identifier: item.id}}" v-for="item in items" :key="item.id" class="bg-slate-100 p-4">
                 <div>
                     <img class="w-full h-[135px]" :src="item.img" alt="Logo">
                     <p class="hover:text-rose-600 pt-2.5">{{ item.name }}</p>
