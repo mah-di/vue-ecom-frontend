@@ -17,18 +17,18 @@ const identifier = computed(() => route.params.identifier)
 const type = computed(() => route.params.type)
 
 const getPageTitle = async () => {
-    if (type.value === 'remarks') {
+    if (type.value === 'remark') {
         let remark = ''
 
         for (let word of identifier.value.split('-'))
             remark += word.charAt(0).toUpperCase() + word.slice(1) + ' '
 
-        return pageTitle.value = remark
+        return pageTitle.value = `${ remark } Products`
     }
 
     try {
         const response = await axios.get(`http://localhost:8000/api/${ type.value }/${ identifier.value }`)
-        const prefix = type.value === 'categories' ? 'Category' : 'Brand'
+        const prefix = type.value === 'category' ? 'Category' : 'Brand'
 
         pageTitle.value = `${ prefix } - ${ response.data.data.name }`
     } catch (error) {
@@ -36,14 +36,16 @@ const getPageTitle = async () => {
     }
 }
 
-onMounted(async () => getPageTitle())
+onMounted( async () => getPageTitle())
 
-onBeforeRouteUpdate(async (to, from, next) => {
-    pageTitle.value = null
+onBeforeRouteUpdate( async (to, from, next) => {
+    if (identifier.value !== to.params.identifier || type.value !== to.params.type)
+        pageTitle.value = null
+
     return next()
 })
 
-watch(() => route.path, () => getPageTitle())
+watch(() => route.path, async () => getPageTitle())
 </script>
 
 <template>

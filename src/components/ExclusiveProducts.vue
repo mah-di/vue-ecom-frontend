@@ -34,8 +34,8 @@ const setRemark = (remark) => {
 watch(selected, async () => {
     if (remarks[selected.value].isLoading) {
         try {
-            const response = await axios.get(`http://localhost:8000/api/remarks/${ encodeURI( selected.value.toLowerCase() ) }/products`)
-            remarks[selected.value].products = response.data.data
+            const response = await axios.get(`http://localhost:8000/api/remark/${ encodeURI( selected.value.toLowerCase() ) }/product?limit=8`)
+            remarks[selected.value].products = response.data.data.data
         } catch (error) {
             console.error(error);
         } finally {
@@ -64,7 +64,7 @@ watch(selected, async () => {
                 <ProductCard v-for="product in products" :key="product.id" :product="product" />
             </div>
 
-            <router-link v-if="selected.value" :to="{ name: 'listing', params: { type: 'remarks', identifier: encodeURI( selected.value.toLowerCase() ) } }" class="block mt-8 py-3 text-center rounded border border-rose-600 text-rose-600 hover:bg-rose-600 hover:text-white">View All</router-link>
+            <router-link v-if="selected.value" :to="{ name: 'listing', params: { type: 'remark', identifier: encodeURI( selected.value.toLowerCase() ) } }" class="block mt-8 py-3 text-center rounded border border-rose-600 text-rose-600 hover:bg-rose-600 hover:text-white transition-all">View All</router-link>
         </template>
     </ContentWrapper>
 </template>

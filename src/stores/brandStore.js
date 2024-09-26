@@ -9,7 +9,7 @@ const useBrandStore = defineStore('brand', () => {
     const get = async () => {
         if (brands.value.length === 0) {
             try {
-                const response = await axios.get('http://localhost:8000/api/brands')
+                const response = await axios.get('http://localhost:8000/api/brand')
                 if (response.data.status === "success") {
                     brands.value.push(...response.data.data)
                 }

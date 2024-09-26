@@ -9,7 +9,7 @@ const useCategoryStore = defineStore('category', () => {
     const get = async () => {
         if (categories.value.length === 0) {
             try {
-                const response = await axios.get('http://localhost:8000/api/categories')
+                const response = await axios.get('http://localhost:8000/api/category')
                 if (response.data.status === "success") {
                     categories.value.push(...response.data.data)
                 }
