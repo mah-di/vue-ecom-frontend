@@ -2,8 +2,8 @@
 import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 import { inject, onMounted, ref } from 'vue';
-import axios from 'axios';
 import ContentLoader from './ContentLoader.vue';
+import api from '@/services/api';
 
 const pageIsLoading = inject('pageIsLoading')
 
@@ -11,7 +11,7 @@ const items = ref([])
 
 onMounted(async () => {
     try {
-        const response = await axios.get('http://localhost:8000/api/product-slider')
+        const response = await api.get('/product-slider')
         if (response.data.status === "success") {
             items.value.push(...response.data.data)
         }

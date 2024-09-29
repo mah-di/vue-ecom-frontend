@@ -6,7 +6,7 @@ import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 import { provide, ref } from 'vue';
 import PageLoader from '@/components/PageLoader.vue';
 import ProductListing from '@/components/ProductListing.vue';
-import axios from 'axios';
+import api from '@/services/api';
 
 provide('pageIsLoading', ref(true))
 
@@ -27,7 +27,7 @@ const getPageTitle = async () => {
     }
 
     try {
-        const response = await axios.get(`http://localhost:8000/api/${ type.value }/${ identifier.value }`)
+        const response = await api.get(`/${ type.value }/${ identifier.value }`)
         const prefix = type.value === 'category' ? 'Category' : 'Brand'
 
         pageTitle.value = `${ prefix } - ${ response.data.data.name }`

@@ -1,9 +1,9 @@
 <script setup>
 import { inject, onMounted, ref, watch } from 'vue';
 import ContentLoader from './ContentLoader.vue';
-import axios from 'axios';
 import ContentWrapper from './ContentWrapper.vue';
 import { onBeforeRouteUpdate } from 'vue-router';
+import api from '@/services/api';
 
 const props = defineProps({
     policy: String
@@ -13,7 +13,7 @@ const content = ref('')
 
 const get = async () => {
     try {
-        const response = await axios.get(`http://localhost:8000/api/policy/${ props.policy }`)
+        const response = await api.get(`/policy/${ props.policy }`)
         content.value = response.data.data.des
     } catch (error) {
         console.error(error)

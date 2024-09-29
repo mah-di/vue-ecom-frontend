@@ -2,6 +2,11 @@
 import { computed, ref } from 'vue';
 import ContentWrapper from './ContentWrapper.vue';
 import SelectOption from './SelectOption.vue';
+import useAuthStore from '@/stores/authStore';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
+const authStore = useAuthStore()
 
 const props = defineProps({
     product: Object,
@@ -53,6 +58,16 @@ const images = computed(() => {
 })
 
 const activeImg = ref(images.value[0])
+
+const addToWishlist = () => {
+    if (!authStore.isAuthenticated)
+        return router.push({ name: 'login' })
+}
+
+const addToCart = () => {
+    if (!authStore.isAuthenticated)
+        return router.push({ name: 'login' })
+}
 </script>
 
 <template>
@@ -88,7 +103,7 @@ const activeImg = ref(images.value[0])
                 <div class="pb-8">
                     <div class="flex justify-between">
                         <router-link :to="{ name: 'listing', params: { type: 'brand', identifier: product.brand.id }}" class="inline-block py-[1.5px] px-2 mb-2 text-sm rounded text-rose-600 hover:text-rose-700 bg-slate-50 hover:bg-slate-100 transition-all font-semibold">{{ product.brand.name }}</router-link>
-                        <i class="pi pi-heart text-xl ml-4 text-rose-600 hover:pi-heart-fill cursor-pointer transition-all"></i>
+                        <i @click="addToWishlist" class="pi pi-heart text-xl ml-4 text-rose-600 hover:pi-heart-fill cursor-pointer transition-all"></i>
                     </div>
                     <h1 class="text-slate-900 text-2xl font-bold">{{ product.title }}</h1>
                     <p v-if="product.star" class="text-rose-600">Rating: <i class="pi pi-star"></i> {{ product.star }} / 5</p>
@@ -118,7 +133,7 @@ const activeImg = ref(images.value[0])
                     </div>
 
                     <div class="text-center mt-4 lg:mt-0">
-                        <button class="inline bg-rose-600 text-white px-10 py-3 rounded font-semibold hover:bg-rose-700 transition-all"><i class="pi pi-shopping-cart mr-2"></i> Add To Cart</button>
+                        <button @click="addToCart" class="inline bg-rose-600 text-white px-10 py-3 rounded font-semibold hover:bg-rose-700 transition-all"><i class="pi pi-shopping-cart mr-2"></i> Add To Cart</button>
                     </div>
                 </div>
             </div>

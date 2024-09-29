@@ -7,7 +7,7 @@ import ProductDetail from '@/components/ProductDetail.vue';
 import ProductReview from '@/components/ProductReview.vue';
 import RelatedProducts from '@/components/RelatedProducts.vue';
 import TopBrands from '@/components/TopBrands.vue';
-import axios from 'axios';
+import api from '@/services/api';
 import { computed, onMounted, provide, reactive, ref, shallowRef, watch } from 'vue';
 import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 
@@ -26,10 +26,10 @@ const id = computed(() => route.params.id)
 
 const get = async () => {
     try {
-        const prodResponse = await axios.get(`http://localhost:8000/api/product/${ id.value }`)
+        const prodResponse = await api.get(`/product/${ id.value }`)
         state.product = prodResponse.data.data
 
-        const detailResponse = await axios.get(`http://localhost:8000/api/product/${ id.value }/detail`)
+        const detailResponse = await api.get(`/product/${ id.value }/detail`)
         state.productDetail = detailResponse.data.data
     } catch (error) {
         console.error(error)

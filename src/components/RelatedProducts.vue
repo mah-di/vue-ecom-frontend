@@ -3,7 +3,7 @@ import { onMounted, reactive } from 'vue';
 import ContentWrapper from './ContentWrapper.vue';
 import ContentLoader from './ContentLoader.vue';
 import ProductCard from './ProductCard.vue';
-import axios from 'axios';
+import api from '@/services/api';
 
 const props = defineProps({
     product: Object
@@ -16,7 +16,7 @@ const state = reactive({
 
 const get = async () => {
     try {
-        const response = await axios.get(`http://localhost:8000/api/product?category_id=${ props.product.category_id }&remark=${ props.product.remark }&related_id=${ props.product.id }&limit=4`)
+        const response = await api.get(`/product?category_id=${ props.product.category_id }&remark=${ props.product.remark }&related_id=${ props.product.id }&limit=4`)
         state.product = response.data.data.data
     } catch (error) {
         console.error(error)

@@ -1,8 +1,8 @@
 <script setup>
-import axios from 'axios';
 import { computed, onActivated, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 import ContentLoader from './ContentLoader.vue';
+import api from '@/services/api';
 
 const route = useRoute()
 
@@ -14,7 +14,7 @@ const state = reactive({
 
 const getReviews = async () => {
     try {
-        const response = await axios.get(`http://localhost:8000/api/product/${ id.value }/review`)
+        const response = await api.get(`/product/${ id.value }/review`)
         state.reviews = response.data.data
     } catch (error) {
         console.error(error)

@@ -1,4 +1,4 @@
-import axios from "axios"
+import api from "@/services/api"
 import { defineStore } from "pinia"
 import { ref } from "vue"
 
@@ -9,7 +9,7 @@ const useBrandStore = defineStore('brand', () => {
     const get = async () => {
         if (brands.value.length === 0) {
             try {
-                const response = await axios.get('http://localhost:8000/api/brand')
+                const response = await api.get('/brand')
                 if (response.data.status === "success") {
                     brands.value.push(...response.data.data)
                 }

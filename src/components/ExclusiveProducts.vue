@@ -1,9 +1,9 @@
 <script setup>
-import axios from 'axios';
 import { computed, onMounted, reactive, watch } from 'vue';
 import ProductCard from './ProductCard.vue';
 import ContentLoader from './ContentLoader.vue';
 import ContentWrapper from './ContentWrapper.vue';
+import api from '@/services/api';
 
 
 const remarks = reactive({
@@ -34,7 +34,7 @@ const setRemark = (remark) => {
 watch(selected, async () => {
     if (remarks[selected.value].isLoading) {
         try {
-            const response = await axios.get(`http://localhost:8000/api/product?remark=${ encodeURI( selected.value.toLowerCase() ) }&limit=8`)
+            const response = await api.get(`/product?remark=${ encodeURI( selected.value.toLowerCase() ) }&limit=8`)
             remarks[selected.value].products = response.data.data.data
         } catch (error) {
             console.error(error);
