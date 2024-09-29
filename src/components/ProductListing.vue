@@ -14,8 +14,14 @@ const router = useRouter()
 
 const pageIsLoading = inject('pageIsLoading')
 const props = defineProps({
-    type: String,
-    identifier: String
+    type: {
+        type: String,
+        default: null
+    },
+    identifier: {
+        type: String,
+        default: null
+    }
 })
 
 const categoryStore = useCategoryStore()
@@ -58,10 +64,10 @@ const products = ref([])
 const isLoading = ref(true)
 const openFilter = ref(false)
 
-const query = props.type === 'remark' ? props.type : `${ props.type }_id`
-const endpoint = ref(`http://localhost:8000/api/product?${ query }=${ props.identifier }`)
+const endpoint = ref(`http://localhost:8000/api/product`)
 
 const filters = reactive({
+    q: route.query.q || null,
     category_id: route.query.category_id || null,
     brand_id: route.query.brand_id || null,
     remark: route.query.remark || null,
@@ -79,6 +85,7 @@ const get = async () => {
         endpoint.value = response.data.data.next_page_url
     } catch (error) {
         console.error(error)
+        endpoint.value = null
     } finally {
         pageIsLoading.value = false
         isLoading.value = false
@@ -93,7 +100,12 @@ const applyFilter = async () => {
     router.push({ query: query })
 }
 
-onMounted( async () => await get())
+onMounted( async () => {
+    const query = props.type === 'remark' ? props.type : `${ props.type }_id`
+    filters[query] = props.identifier
+
+    await get()
+})
 
 onBeforeRouteUpdate( async (to, from, next) => {
     products.value = []
@@ -104,7 +116,8 @@ onBeforeRouteUpdate( async (to, from, next) => {
     Object.keys(filters).forEach(key => filters[key] = to.query[key] || null)
 
     const query = to.params.type === 'remark' ? to.params.type : `${ to.params.type }_id`
-    endpoint.value = `http://localhost:8000/api/product?${ query }=${ to.params.identifier }`
+    filters[query] = to.params.identifier
+    endpoint.value =`http://localhost:8000/api/product`
 
     return next()
 })

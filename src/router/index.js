@@ -2,6 +2,8 @@ import PolicyPage from '@/views/PolicyPage.vue'
 import HomePage from '@/views/HomePage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import ListingPage from '@/views/ListingPage.vue'
+import ProductPage from '@/views/ProductPage.vue'
+import SearchPage from '@/views/SearchPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,11 +23,19 @@ const router = createRouter({
       name: 'listing',
       component: ListingPage
     },
+    {
+      path: '/search',
+      name: 'search',
+      component: SearchPage
+    },
+    {
+      path: '/product/:id',
+      name: 'product',
+      component: ProductPage
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) return savedPosition
-
-    return { top: 0, left: 0 }
+    return savedPosition ? savedPosition : { top: 0, left: 0 }
   }
 })
 

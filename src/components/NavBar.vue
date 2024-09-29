@@ -8,15 +8,17 @@ const route = useRoute()
 const openCategories = ref(false)
 const openMenu = ref(false)
 const openSearch = ref(false)
+const searchVal = ref('')
 
 const categoryStore = useCategoryStore()
 
 onMounted(async () => await categoryStore.get())
 
-watch(() => route.path, () => {
+watch(() => route.fullPath, () => {
     openCategories.value = false
     openMenu.value = false
     openSearch.value = false
+    searchVal.value = ''
 })
 </script>
 
@@ -64,10 +66,11 @@ watch(() => route.path, () => {
     <div v-show="openSearch" class="fixed top-0 h-[100vh] w-[100vw] bg-black opacity-60 z-50 flex justify-center items-center">
         <span class="absolute top-10 right-10"><i class="pi pi-times text-3xl text-white cursor-pointer" @click="openSearch = false"></i></span>
         <div>
-            <form class="border-b-2 border-b-slate-200">
-                <input type="text" class="py-3 w-[60vw] rounded text-white mr-2 bg-inherit focus:outline-none" placeholder="Search">
-                <button type="submit" class="inline bg-inherit text-white p-3 rounded font-semibold"><i class="pi pi-search"></i></button>
-            </form>
+            <div class="border-b-2 border-b-slate-200">
+                <input v-model="searchVal" type="text" class="py-3 w-[60vw] rounded text-white mr-2 bg-inherit focus:outline-none" placeholder="Search Products">
+                <span v-show="!searchVal" class="inline bg-inherit text-white p-3 rounded font-semibold cursor-pointer"><i class="pi pi-search"></i></span>
+                <router-link v-show="searchVal" :to="{name: 'search', query: {q: searchVal}}" @click="openSearch = false"  class="inline bg-inherit text-white p-3 rounded font-semibold"><i class="pi pi-search"></i></router-link>
+            </div>
         </div>
     </div>
 </template>

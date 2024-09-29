@@ -34,7 +34,7 @@ const setRemark = (remark) => {
 watch(selected, async () => {
     if (remarks[selected.value].isLoading) {
         try {
-            const response = await axios.get(`http://localhost:8000/api/remark/${ encodeURI( selected.value.toLowerCase() ) }/product?limit=8`)
+            const response = await axios.get(`http://localhost:8000/api/product?remark=${ encodeURI( selected.value.toLowerCase() ) }&limit=8`)
             remarks[selected.value].products = response.data.data.data
         } catch (error) {
             console.error(error);

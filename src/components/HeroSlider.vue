@@ -33,7 +33,7 @@ onMounted(async () => {
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
                     <p class="text-white">{{ item.pricing }}</p>
                     <h1 class="text-white text-5xl font-bold my-16">{{ item.title }}</h1>
-                    <router-link :to="{name: 'home'}" class="inline bg-rose-600 text-white p-3 rounded font-semibold mt-4 hover:bg-rose-700 transition-all">Shop Now</router-link>
+                    <router-link :to="{name: 'product', params: {id: item.product_id}}" class="inline bg-rose-600 text-white p-3 rounded font-semibold mt-4 hover:bg-rose-700 transition-all">Shop Now</router-link>
                 </div>
             </div>
         </div>
