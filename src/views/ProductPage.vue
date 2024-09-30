@@ -65,7 +65,7 @@ watch(() => route.path, async () => await get())
 <template>
     <PageLoader />
     <template v-if="!pageIsLoading">
-        <ProductContent :product="state.product" :productDetail="state.productDetail" :isLoading="pageIsLoading" :key="state.product.id" />
+        <ProductContent :product="state.product" :productDetail="state.productDetail" />
 
         <ContentWrapper >
             <div class="border-b border-b-slate-200">

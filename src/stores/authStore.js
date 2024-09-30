@@ -11,7 +11,8 @@ const useAuthStore = defineStore('auth', () => {
         name: null,
         email: null,
         otp: null,
-        authToken: null
+        authToken: null,
+        wishlist: []
     })
 
     const isAuthenticated = computed(() => !!state.authToken)
@@ -39,9 +40,17 @@ const useAuthStore = defineStore('auth', () => {
                 state.otp = null
                 state.authToken = data.token
 
-                const res = await getProfile()
+                let hasProfile = null
 
-                res ? router.push({ name: 'home' }) : router.push({ name: 'profile' })
+                for (let i = 0; i < 5; i++) {
+                    hasProfile = await getProfile()
+                    if (hasProfile !== null) break
+                }
+
+                for (let i = 0; i < 5; i++)
+                    if (await getWishlist() !== null) break
+
+                hasProfile ? router.push({ name: 'home' }) : router.push({ name: 'profile' })
             }
 
             return response.data
@@ -53,7 +62,7 @@ const useAuthStore = defineStore('auth', () => {
 
     const getProfile = async () => {
         try {
-            const response = await api.get(`/profile`, { headers: { token: state.authToken } })
+            const response = await api.get(`/profile`)
 
             if (!response.data.data) 
                 return false
@@ -63,8 +72,66 @@ const useAuthStore = defineStore('auth', () => {
             return true
         } catch (error) {
             console.error(error)
+
+            return null
         }
     }
+
+    const getWishlist = async () => {
+        try {
+            const response = await api.get(`/user/wish?short=true`)
+
+            if (!response.data.data)
+                return false
+
+            state.wishlist.push(...response.data.data)
+
+            return true
+        } catch (error) {
+            console.error(error)
+
+            return null
+        }
+    }
+
+    const updateWishlist = async (id) => {
+        if (isWishlisted(id))
+            return await removeFromWishlist(id)
+
+        return await addToWishlist(id)
+    }
+
+    const addToWishlist = async id => {
+        try {
+            const response = await api.get(`/user/wish/${ id }`)
+
+            if (response.data.status === "success") 
+                state.wishlist.push(id)
+
+            return response.data
+        } catch (error) {
+            console.error(error)
+
+            return { status: 'error', message: 'Unexpected error occurred, please try again' }
+        }
+    }
+
+    const removeFromWishlist = async id => {
+        try {
+            const response = await api.delete(`/user/wish/${ id }`)
+
+            if (response.data.status === "success")
+                state.wishlist = state.wishlist.filter(item => item !== id)
+
+            return response.data
+        } catch (error) {
+            console.error(error)
+
+            return { status: 'error', message: 'Unexpected error occurred, please try again' }
+        }
+    }
+
+    const isWishlisted = id => state.wishlist.includes(id)
 
     const logout = () => {
         Object.keys(state).forEach(key => state[key] = null)
@@ -72,7 +139,7 @@ const useAuthStore = defineStore('auth', () => {
         router.push({ name: 'login' })
     }
 
-    return { state, isAuthenticated, requestOTP, verifyOTP, logout }
+    return { state, isAuthenticated, requestOTP, verifyOTP, logout, updateWishlist, isWishlisted }
 
 }, { persist: true })
 

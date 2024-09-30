@@ -33,8 +33,12 @@ watch(() => route.fullPath, () => {
             </div>
             <div class="hidden md:flex md:items-center md:justify-between">
                 <router-link :to="{ name: 'policy', params: { policy: 'about' }}" class="px-4 py-2 hover:text-rose-600 hover:bg-slate-50 transition-all">About</router-link>
-                <router-link :to="{ name: 'profile' }" class="px-4 py-2 hover:text-rose-600 hover:bg-slate-50 transition-all"><i class="pi pi-user text-sm mr-2"></i>Account</router-link>
-                <button v-if="authStore.isAuthenticated" @click="authStore.logout" class="px-4 py-2 bg-rose-600 text-white hover:bg-rose-700 rounded cursor-pointer transition-all">Logout</button>
+
+                <template v-if="authStore.isAuthenticated">
+                    <router-link :to="{ name: 'profile' }" class="px-4 py-2 hover:text-rose-600 hover:bg-slate-50 transition-all"><i class="pi pi-user text-sm mr-2"></i>Account</router-link>
+                    <button @click="authStore.logout" class="px-4 py-2 bg-rose-600 text-white hover:bg-rose-700 rounded cursor-pointer transition-all">Logout</button>
+                </template>
+
                 <router-link v-else :to="{ name: 'login' }" class="px-4 py-2 bg-rose-600 text-white hover:bg-rose-700 rounded cursor-pointer transition-all">Login</router-link>
             </div>
         </div>
@@ -48,18 +52,22 @@ watch(() => route.fullPath, () => {
             </div>
             <div class="md:flex md:items-center md:justify-between" :class="openMenu ? 'block' : 'hidden'">
                 <router-link :to="{ name: 'home' }" class="px-4 py-2 hover:text-rose-600 block md:inline hover:bg-slate-50 transition-all">Home</router-link>
-                <router-link :to="{ name: 'profile' }" class="px-4 py-2 block md:hidden hover:text-rose-600 hover:bg-slate-50 transition-all"><i class="pi pi-user text-sm mr-2"></i>Account</router-link>
                 <router-link :to="{ name: 'policy', params: { policy: 'about' }}" class="px-4 py-2 block md:hidden hover:text-rose-600 hover:bg-slate-50 transition-all">About</router-link>
+
+                <template v-if="authStore.isAuthenticated">
+                    <router-link :to="{ name: 'profile' }" class="px-4 py-2 block md:hidden hover:text-rose-600 hover:bg-slate-50 transition-all"><i class="pi pi-user text-sm mr-2"></i>Account</router-link>
+                    <span class="px-4 py-2 hover:text-rose-600 block md:inline hover:bg-slate-50 transition-all"><i class="pi pi-heart text-sm mr-2"></i>Wish</span>
+                    <span class="px-4 py-2 hover:text-rose-600 block md:inline hover:bg-slate-50 transition-all"><i class="pi pi-shopping-cart text-sm mr-2"></i>Cart</span>
+                </template>
+
                 <div>
                     <span @click="openCategories = !openCategories" class="px-4 py-2 hover:text-rose-600 block md:inline hover:bg-slate-50 cursor-pointer transition-all">Categories
                         <i class="pi text-sm ml-2" :class="openCategories ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
                     </span>
-                    <div v-show="openCategories" class="md:mt-10 md:absolute md:top-100 max-h-[50vh] overflow-auto w-full md:min-w-[150px] md:max-w-[300px] rounded border border-gray-50 bg-white">
+                    <div v-show="openCategories" class="md:mt-10 md:absolute md:top-100 md:right-12 xl:right-24 2xl:right-auto max-h-[50vh] overflow-auto w-full md:min-w-[150px] md:max-w-[300px] rounded border border-gray-50 bg-white">
                         <router-link :to="{ name: 'listing', params: { type: 'category', identifier: category.id }}" v-for="category in categoryStore.categories" :key="category.id" class="block px-4 py-2 hover:text-rose-600 hover:bg-slate-50 border-b border-b-gray-200 hover:border-b-rose-500 transition-all">{{ category.name }}</router-link>
                     </div>
                 </div>
-                <span class="px-4 py-2 hover:text-rose-600 block md:inline hover:bg-slate-50 transition-all"><i class="pi pi-heart text-sm mr-2"></i>Wish</span>
-                <span class="px-4 py-2 hover:text-rose-600 block md:inline hover:bg-slate-50 transition-all"><i class="pi pi-shopping-cart text-sm mr-2"></i>Cart</span>
                 <span @click="openSearch = true" class="px-4 py-2 hover:text-rose-600 block md:inline hover:bg-slate-50 cursor-pointer transition-all"><i class="pi pi-search text-sm mr-2"></i>Search</span>
                 <button v-if="authStore.isAuthenticated" @click="authStore.logout" class="w-full py-2 block md:hidden bg-rose-600 text-white hover:bg-rose-700 rounded cursor-pointer transition-all">Logout</button>
                 <router-link v-else :to="{ name: 'login' }" class="py-2 block md:hidden bg-rose-600 text-white hover:bg-rose-700 rounded cursor-pointer transition-all">Login</router-link>
