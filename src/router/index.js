@@ -45,9 +45,35 @@ const router = createRouter({
     },
     {
       path: '/profile',
-      name: 'profile',
       component: ProfilePage,
       meta: { requiresAuth: true },
+      children: [
+        {
+          path: '/',
+          name: 'account',
+          component: () => import('@/views/AccountPage.vue')
+        },
+        {
+          path: 'order',
+          name: 'order',
+          component: () => import('@/views/OrderPage.vue')
+        },
+        {
+          path: 'cart',
+          name: 'cart',
+          component: () => import('@/views/CartPage.vue')
+        },
+        {
+          path: 'wishlist',
+          name: 'wishlist',
+          component: () => import('@/views/WishlistPage.vue')
+        },
+        {
+          path: 'review',
+          name: 'review',
+          component: () => import('@/views/ReviewPage.vue')
+        },
+      ]
     },
     {
       path: '/login',

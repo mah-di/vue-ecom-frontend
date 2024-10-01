@@ -35,7 +35,7 @@ watch(() => route.fullPath, () => {
                 <router-link :to="{ name: 'policy', params: { policy: 'about' }}" class="px-4 py-2 hover:text-rose-600 hover:bg-slate-50 transition-all">About</router-link>
 
                 <template v-if="authStore.isAuthenticated">
-                    <router-link :to="{ name: 'profile' }" class="px-4 py-2 hover:text-rose-600 hover:bg-slate-50 transition-all"><i class="pi pi-user text-sm mr-2"></i>Account</router-link>
+                    <router-link :to="{ name: 'account' }" class="px-4 py-2 hover:text-rose-600 hover:bg-slate-50 transition-all"><i class="pi pi-user text-sm mr-2"></i>Account</router-link>
                     <button @click="authStore.logout" class="px-4 py-2 bg-rose-600 text-white hover:bg-rose-700 rounded cursor-pointer transition-all">Logout</button>
                 </template>
 
@@ -55,9 +55,9 @@ watch(() => route.fullPath, () => {
                 <router-link :to="{ name: 'policy', params: { policy: 'about' }}" class="px-4 py-2 block md:hidden hover:text-rose-600 hover:bg-slate-50 transition-all">About</router-link>
 
                 <template v-if="authStore.isAuthenticated">
-                    <router-link :to="{ name: 'profile' }" class="px-4 py-2 block md:hidden hover:text-rose-600 hover:bg-slate-50 transition-all"><i class="pi pi-user text-sm mr-2"></i>Account</router-link>
-                    <span class="px-4 py-2 hover:text-rose-600 block md:inline hover:bg-slate-50 transition-all"><i class="pi pi-heart text-sm mr-2"></i>Wish</span>
-                    <span class="px-4 py-2 hover:text-rose-600 block md:inline hover:bg-slate-50 transition-all"><i class="pi pi-shopping-cart text-sm mr-2"></i>Cart</span>
+                    <router-link :to="{ name: 'account' }" class="px-4 py-2 block md:hidden hover:text-rose-600 hover:bg-slate-50 transition-all"><i class="pi pi-user text-sm mr-2"></i>Account</router-link>
+                    <router-link :to="{ name: 'wishlist' }" class="px-4 py-2 hover:text-rose-600 block md:inline hover:bg-slate-50 transition-all"><i class="pi pi-heart text-sm mr-2"></i>Wish</router-link>
+                    <router-link :to="{ name: 'cart' }" class="px-4 py-2 hover:text-rose-600 block md:inline hover:bg-slate-50 transition-all"><i class="pi pi-shopping-cart text-sm mr-2"></i>Cart</router-link>
                 </template>
 
                 <div>

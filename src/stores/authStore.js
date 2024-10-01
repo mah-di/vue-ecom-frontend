@@ -48,9 +48,9 @@ const useAuthStore = defineStore('auth', () => {
                 }
 
                 for (let i = 0; i < 5; i++)
-                    if (await getWishlist() !== null) break
+                    if (await getWishlist()) break
 
-                hasProfile ? router.push({ name: 'home' }) : router.push({ name: 'profile' })
+                hasProfile ? router.push({ name: 'home' }) : router.push({ name: 'account' })
             }
 
             return response.data
@@ -63,6 +63,9 @@ const useAuthStore = defineStore('auth', () => {
     const getProfile = async () => {
         try {
             const response = await api.get(`/profile`)
+
+            if (response.data.status !== "success") 
+                return null
 
             if (!response.data.data) 
                 return false
@@ -81,7 +84,7 @@ const useAuthStore = defineStore('auth', () => {
         try {
             const response = await api.get(`/user/wish?short=true`)
 
-            if (!response.data.data)
+            if (response.data.status !== "success")
                 return false
 
             state.wishlist.push(...response.data.data)
@@ -90,7 +93,7 @@ const useAuthStore = defineStore('auth', () => {
         } catch (error) {
             console.error(error)
 
-            return null
+            return false
         }
     }
 
@@ -130,16 +133,31 @@ const useAuthStore = defineStore('auth', () => {
             return { status: 'error', message: 'Unexpected error occurred, please try again' }
         }
     }
+    
+    const clearWishlist = async () => {
+        try {
+            let response = await api.delete('/user/wish')
+
+            if (response.data.status === "success")
+                state.wishlist = []
+
+            return response.data
+        } catch (error) {
+            console.error(error)
+
+            return { status: 'error', message: 'Unexpected error occurred, please try again' }
+        }
+    }
 
     const isWishlisted = id => state.wishlist.includes(id)
 
     const logout = () => {
-        Object.keys(state).forEach(key => state[key] = null)
+        Object.keys(state).forEach( key => state[key] = ( key === 'wishlist' ) ? [] : null )
 
         router.push({ name: 'login' })
     }
 
-    return { state, isAuthenticated, requestOTP, verifyOTP, logout, updateWishlist, isWishlisted }
+    return { state, isAuthenticated, requestOTP, verifyOTP, logout, updateWishlist, removeFromWishlist, clearWishlist, isWishlisted }
 
 }, { persist: true })
 

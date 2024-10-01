@@ -140,7 +140,7 @@ const addToCart = async () => {
                     <h1 class="text-slate-900 text-2xl font-bold">{{ product.title }}</h1>
                     <p v-if="product.star" class="text-rose-600">Rating: <i class="pi pi-star"></i> {{ product.star }} / 5</p>
                     <p v-else class="text-slate-600">No Reviews Yet</p>
-                    <p class="text-xl font-semibold text-rose-600 mt-4 pt-4 border-t border-t-slate-200">$ {{ product.price }}</p>
+                    <p class="text-xl font-semibold text-rose-600 mt-4 pt-4 border-t border-t-slate-200">৳ {{ product.price }}</p>
                     <p class="mt-2 text-lg font-semibold">Stock Left: {{ stock }}</p>
                     <p class="mt-4 text-slate-600">{{ product.short_des }}</p>
                     <template v-if="productDetail">

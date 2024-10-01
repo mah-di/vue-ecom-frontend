@@ -32,7 +32,7 @@ const title = computed(() => {
                 {{ title }}
             </router-link>
             <span v-if="product.title.length > 25" @click="fullTitle = !fullTitle" class="cursor-pointer text-slate-600 hover:text-rose-600 text-sm">{{ fullTitle ? 'less' : 'more' }}</span>
-            <p class="text-rose-600 font-bold pt-4">$ {{ product.price }}</p>
+            <p class="text-rose-600 font-bold pt-4">৳ {{ product.price }}</p>
             <span class="text-sm text-rose-600 font-bold">
                 <template v-if="product.star >= 1">
                     <i class="pi pi-star"></i> {{ product.star }} / 5
