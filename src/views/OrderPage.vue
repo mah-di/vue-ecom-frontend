@@ -35,7 +35,7 @@ onMounted( async () => await get())
 
 <template>
     <PageLoader :plainBG="plainBG" />
-    <ContentWrapper>
+    <ContentWrapper :sectionClass="['px-0']">
         <h2 class="text-2xl font-bold text-slate-600 text-center">Past Orders</h2>
 
         <ContentWrapper v-if="orders.length === 0">
@@ -43,8 +43,8 @@ onMounted( async () => await get())
         </ContentWrapper>
 
         <template v-else>
-            <div class="my-8">
-                <div class="py-3 bg-slate-200 grid grid-cols-6 gap-2 sm:gap-6 text-center">
+            <div class="my-8 overflow-x-auto">
+                <div class="min-w-[600px] py-3 bg-slate-200 grid grid-cols-6 gap-2 sm:gap-6 text-center">
                     <div>Date</div>
                     <div>Order ID</div>
                     <div>Transaction ID</div>
@@ -53,14 +53,16 @@ onMounted( async () => await get())
                     <div>Total</div>
                 </div>
 
-                <div v-for="(order, index) in orders" :key="index" class="py-4 text-center border-b border-b-slate-200 grid grid-cols-6 gap-2 sm:gap-6 cursor-pointer hover:bg-slate-50 transition-all">
-                    <div>{{ getDate(order.created_at) }}</div>
-                    <div>{{ order.id }}</div>
-                    <div>{{ order.transaction_id }}</div>
-                    <div>{{ order.payment_status }}</div>
-                    <div>{{ order.delivery_status }}</div>
-                    <div>৳ {{ order.payable }}</div>
-                </div>
+                <router-link v-for="(order, index) in orders" :key="index" :to="{ name: 'singleOrder', params: { id: order.id }}">
+                    <div class="min-w-[600px] py-4 text-center border-b border-b-slate-200 grid grid-cols-6 gap-2 sm:gap-6 cursor-pointer hover:bg-slate-50 transition-all">
+                        <div>{{ getDate(order.created_at) }}</div>
+                        <div>{{ order.id }}</div>
+                        <div>{{ order.transaction_id }}</div>
+                        <div>{{ order.payment_status }}</div>
+                        <div>{{ order.delivery_status }}</div>
+                        <div>৳ {{ order.payable }}</div>
+                    </div>
+                </router-link>
             </div>
         </template>
     </ContentWrapper>
