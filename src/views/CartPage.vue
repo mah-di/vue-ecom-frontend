@@ -3,13 +3,34 @@ import CartItem from '@/components/CartItem.vue';
 import ContentWrapper from '@/components/ContentWrapper.vue';
 import PageLoader from '@/components/PageLoader.vue';
 import api from '@/services/api';
-import { computed, onMounted, provide, ref } from 'vue';
+import { computed, onMounted, provide, reactive, ref } from 'vue';
 
-const cartlist = ref([])
 const pageIsLoading = ref(true)
 const plainBG = ref(true)
 
 provide('pageIsLoading', pageIsLoading)
+
+const cartlist = ref([])
+
+const subTotal = computed(() => {
+    let total = 0
+
+    cartlist.value.forEach( cart => {
+        let price = cart.product.discount > 0 ? cart.product.discount_price : cart.product.price
+        total += price * cart.qty
+    })
+
+    return total
+})
+
+const vat = computed(() => subTotal.value * 0.05)
+
+const paymentData = reactive({
+    getways: [],
+    total: null,
+    vat: null,
+    payable: null
+})
 
 const get = async () => {
     pageIsLoading.value = true
@@ -41,18 +62,24 @@ const clearCart = async () => {
     }
 }
 
-const subTotal = computed(() => {
-    let total = 0
+const checkout = async () => {
+    pageIsLoading.value = true
 
-    cartlist.value.forEach( cart => {
-        let price = cart.product.discount > 0 ? cart.product.discount_price : cart.product.price
-        total += price * cart.qty
-    })
+    try {
+        const response = await api.get('/invoice/place?app=vue')
 
-    return total
-})
-
-const vat = computed(() => subTotal.value * 0.05)
+        if (response.data.status === 'success') {
+            paymentData.getways.push(...response.data.data.payment_methods)
+            paymentData.total = response.data.data.total
+            paymentData.vat = response.data.data.vat
+            paymentData.payable = response.data.data.payable
+        }
+    } catch (error) {
+        console.error(error)
+    } finally {
+        pageIsLoading.value = false
+    }
+}
 
 onMounted( async () => await get())
 </script>
@@ -92,7 +119,26 @@ onMounted( async () => await get())
             </div>
 
             <div class="my-16">
-                <button class="block w-full py-3 rounded border bg-rose-600 hover:bg-rose-700 text-white font-bold transition-all">Checkout</button>
+                <button @click="checkout" class="block w-full py-3 rounded border bg-rose-600 hover:bg-rose-700 text-white font-bold transition-all">Checkout</button>
+            </div>
+
+            <div v-if="paymentData.getways.length > 0" @click.self="paymentData.getways = []" class="fixed h-full w-full top-0 left-0 bg-[rgba(0,0,0,0.5)] z-50 flex justify-center items-center">
+                <div class="bg-white w-[90%] sm:w-[480px] h-[90%] overflow-y-auto">
+                    <div class="text-center px-4 md:px-6 lg:px-8 py-6 bg-slate-100 border-b-4 border-b-slate-600">
+                        <h2 class="text-2xl font-bold text-slate-900">Select a Payment Getway</h2>
+                    </div>
+                    <template v-for="(getway, index) in paymentData.getways" :key="index">
+                        <a :href="getway.redirectGatewayURL">
+                            <div class="w-full px-4 md:px-6 lg:px-8 py-3 border-b border-b-slate-200 hover:bg-slate-50 transition-all">
+                                <div class="flex justify-between items-center">
+                                    <img :src="getway.logo" :alt="getway.type" class="w-16 h-12 rounded object-cover">
+                                    <span>{{ getway.name }}</span>
+                                    <i class="pi pi-arrow-right"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </template>
+                </div>
             </div>
         </template>
     </ContentWrapper>
