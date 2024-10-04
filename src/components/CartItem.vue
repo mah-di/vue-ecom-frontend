@@ -35,9 +35,14 @@ watch(cart, async () => {
     pageIsLoading.value = true
 
     try {
-        const response = await api.post('/user/cart', cart)
+        const response = await api.post('/user/cart?add_stock=true', cart)
 
-        response.data.status === "success" && emit('updateCart', props.cartItem.product_id, cart.qty, response.data.data.remaining_stock)
+        if (response.data.status === "error") {
+            cart.qty = props.cartItem.qty
+            response.data.data.remaining_stock = 0
+        }
+
+        emit('updateCart', props.cartItem.product_id, cart.qty, response.data.data.remaining_stock)
     } catch (error) {
         console.error(error)
     } finally {
@@ -64,9 +69,9 @@ watch(cart, async () => {
 
         <div class=" flex col-span-5 sm:col-span-2 justify-between mt-3 pt-6 border-t border-t-slate-50 sm:mt-0 sm:pt-0 sm:border-t-0">
             <div class="text-center block md:inline">
-                <button @click="cart.qty--" :disabled="cart.qty == 1" class="py-[4px] px-[6px] text-xs rounded-full border border-rose-600 hover:bg-rose-600 hover:text-white disabled:bg-slate-200 disabled:text-inherit transition-all"><i class="pi pi-minus"></i></button>
-                <span class="w-16 text-center py-[4px] px-4 border border-rose-600 focus:outline-none rounded mx-2">{{ cart.qty }}</span>{{ cartItem.product.stock }}
-                <button @click="cart.qty++" :disabled="cartItem.product.stock === 0" class="py-[4px] px-[6px] text-xs rounded-full border border-rose-600 hover:bg-rose-600 hover:text-white disabled:bg-slate-200 disabled:text-inherit transition-all"><i class="pi pi-plus"></i></button>
+                <button @click="cart.qty--" :disabled="cart.qty == 1" class="py-[4px] px-[6px] text-xs rounded-full border border-rose-600 hover:bg-rose-600 hover:text-white disabled:bg-slate-200 disabled:border-slate-200 disabled:text-inherit transition-all"><i class="pi pi-minus"></i></button>
+                <span class="w-16 text-center py-[4px] px-4 border border-rose-600 focus:outline-none rounded mx-2">{{ cart.qty }}</span>
+                <button @click="cart.qty++" :disabled="cartItem.product.stock === 0" class="py-[4px] px-[6px] text-xs rounded-full border border-rose-600 hover:bg-rose-600 hover:text-white disabled:bg-slate-200 disabled:border-slate-200 disabled:text-inherit transition-all"><i class="pi pi-plus"></i></button>
             </div>
             <i @click="remove" class="pi pi-trash text-xl text-rose-600 hover:text-rose-700 cursor-pointer transition-all"></i>
         </div>

@@ -1,6 +1,7 @@
 <script setup>
 import ContentWrapper from '@/components/ContentWrapper.vue';
 import PageLoader from '@/components/PageLoader.vue';
+import ReviewModal from '@/components/ReviewModal.vue';
 import api from '@/services/api';
 import { onMounted, provide, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -19,12 +20,13 @@ const state = reactive({
 })
 
 const review = reactive({
-    item: null,
+    product: null,
     content: {
         review: null,
         rating: null,
         product_id: null
-    }
+    },
+    sale_price: null
 })
 
 const getOrder = async () => {
@@ -68,36 +70,15 @@ const openReview = async (item) => {
             review.content.rating = response.data.data.rating
         }
 
-        review.item = item
+        review.product = { ...item.product, id: item.product_id }
         review.content.product_id = item.product_id
-    } catch (error) {
-        console.error(error)
-    } finally {
-        pageIsLoading.value = false
-    }
-}
-
-const submitReview = async () => {
-    pageIsLoading.value = true
-
-    try {
-        const response = await api.post(`/user/review`, review.content)
-
-        if (response.data.status === "success")
-            closeReview()
+        review.sale_price = item.sale_price
 
     } catch (error) {
         console.error(error)
     } finally {
         pageIsLoading.value = false
     }
-}
-
-const closeReview = () => {
-    review.item = null
-    review.content.review = null
-    review.content.rating = null
-    review.content.product_id = null
 }
 
 onMounted( async () => {
@@ -177,50 +158,7 @@ onMounted( async () => {
                 </div>
             </div>
 
-            <div v-if="review.item" @click.self="closeReview" class="fixed top-0 left-0 z-50 bg-slate-900 opacity-[99.5%] w-full h-full flex items-center justify-center">
-                <div class="bg-slate-50 py-12 w-[90vw] sm:w-[70vw] lg:w-[50vw] rounded-lg">
-                    <div class="flex gap-6 px-4 md:px-6 lg:px-8">
-                        <div>
-                            <router-link :to="{ name: 'product', params: { id: review.item.product_id } }">
-                                <img :src="review.item.product.image" :alt="review.item.product.title" class="sm:h-40 min-[480px]:h-20 h-12 object-cover">
-                            </router-link>
-                        </div>
-    
-                        <div>
-                            <router-link :to="{ name: 'product', params: { id: review.item.product_id } }">
-                                <h3 class="text-lg font-bold text-slate-800 hover:text-rose-600 cursor-pointer">{{ review.item.product.title }}</h3>
-                            </router-link>
-                            <p class="text-slate-500 mt-2">Buying Price : ৳ {{ review.item.sale_price }}</p>
-                        </div>
-                    </div>
-
-                    <div class="my-6 px-4 md:px-6 lg:px-8">
-                        <span class="text-sm font-bold">Review</span>
-                        <textarea v-model="review.content.review" rows="4" type="text" class="w-full p-2 border border-slate-200 focus:outline-rose-700 rounded transition-all"></textarea>
-                    </div>
-
-                    <div class="my-6 px-4 md:px-6 lg:px-8">
-                        <span class="text-sm font-bold">Rating</span>
-                        <select v-model="review.content.rating" type="text" class="w-full p-2 border border-slate-200 focus:outline-rose-700 rounded transition-all">
-                            <option selected value>Select Rating</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                    </div>
-
-                    <div class="my-6 px-4 md:px-6 lg:px-8">
-                        <button @click="submitReview(review.item.id)" class="inline-block mx-2 py-1 px-3 rounded border border-rose-600 bg-rose-600 text-white hover:bg-rose-700 transition-all">
-                            Submit
-                        </button>
-                        <button @click="closeReview" class="inline-block m-2 py-1 px-3 rounded border border-slate-900 hover:bg-slate-900 hover:text-white transition-all">
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <ReviewModal :review="review" />
         </template>
     </ContentWrapper>
 </template>

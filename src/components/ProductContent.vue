@@ -93,6 +93,10 @@ const addToCart = async () => {
 
         if (response.data.status === "success")
             stock.value = response.data.data.remaining_stock
+        else
+            stock.value = 0
+
+        cart.qty = 1
     } catch (error) {
         console.error(error)
     } finally {
@@ -143,7 +147,7 @@ const addToCart = async () => {
                     <p class="text-xl font-semibold text-rose-600 mt-4 pt-4 border-t border-t-slate-200">৳ {{ product.price }}</p>
                     <p class="mt-2 text-lg font-semibold">Stock Left: {{ stock }}</p>
                     <p class="mt-4 text-slate-600">{{ product.short_des }}</p>
-                    <template v-if="productDetail">
+                    <template v-if="productDetail && stock > 0">
                         <div class="mt-4">
                             <div class="py-2">
                                 <p class="text-slate-900 font-semibold mb-1">Size</p>
@@ -157,15 +161,21 @@ const addToCart = async () => {
                     </template>
                 </div>
 
-                <div class="pt-8 flex flex-col lg:flex-row justify-between align-middle border-t border-t-slate-200">
+                <div v-if="stock > 0" class="pt-8 flex flex-col lg:flex-row justify-between align-middle border-t border-t-slate-200">
                     <div class="text-center">
-                        <button @click="cart.qty--" :disabled="cart.qty == 1" class="py-3 px-4 rounded-full border border-rose-600 hover:bg-rose-600 hover:text-white disabled:bg-slate-200 disabled:text-inherit transition-all"><i class="pi pi-minus"></i></button>
+                        <button @click="cart.qty--" :disabled="cart.qty === 1" class="py-3 px-4 rounded-full border border-rose-600 hover:bg-rose-600 hover:text-white disabled:bg-slate-200 disabled:border-slate-200 disabled:text-inherit transition-all"><i class="pi pi-minus"></i></button>
                         <span class="w-16 text-center py-2 px-8 border border-rose-600 focus:outline-none rounded mx-4">{{ cart.qty }}</span>
-                        <button @click="cart.qty++" :disabled="cart.qty == product.stock" class="py-3 px-4 rounded-full border border-rose-600 hover:bg-rose-600 hover:text-white disabled:bg-slate-200 disabled:text-inherit transition-all"><i class="pi pi-plus"></i></button>
+                        <button @click="cart.qty++" :disabled="stock - cart.qty === 0" class="py-3 px-4 rounded-full border border-rose-600 hover:bg-rose-600 hover:text-white disabled:bg-slate-200 disabled:border-slate-200 disabled:text-inherit transition-all"><i class="pi pi-plus"></i></button>
                     </div>
 
                     <div class="text-center mt-4 lg:mt-0">
                         <button @click="addToCart" class="inline bg-rose-600 text-white px-10 py-3 rounded font-semibold hover:bg-rose-700 transition-all"><i class="pi pi-shopping-cart mr-2"></i> Add To Cart</button>
+                    </div>
+                </div>
+
+                <div v-else class="pt-8 flex flex-col lg:flex-row justify-between align-middle border-t border-t-slate-200">
+                    <div class="text-center">
+                        <p class="text-rose-700 text-lg font-bold">Out of Stock</p>
                     </div>
                 </div>
             </div>

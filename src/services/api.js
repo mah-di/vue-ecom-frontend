@@ -17,6 +17,9 @@ api.interceptors.request.use(config => {
 })
 
 api.interceptors.response.use((response) => {
+    if (response.data.status === "fail")
+        response.data = { ...response.data, status: "error" }
+
     return response
 }, (error) => {
     if (error.response && error.response.status === 401) {
