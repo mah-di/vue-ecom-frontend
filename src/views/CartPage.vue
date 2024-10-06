@@ -4,9 +4,11 @@ import ContentWrapper from '@/components/ContentWrapper.vue';
 import PageLoader from '@/components/PageLoader.vue';
 import api from '@/services/api';
 import { computed, onMounted, provide, reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 
 const toast = useToast()
+const router = useRouter()
 
 const pageIsLoading = ref(true)
 const plainBG = ref(true)
@@ -80,6 +82,12 @@ const checkout = async () => {
             paymentData.total = response.data.data.total
             paymentData.vat = response.data.data.vat
             paymentData.payable = response.data.data.payable
+        }
+
+        if (response.data.status === 'error' && response.data.message === 'Please set-up your profile first.') {
+            toast.error(response.data.message)
+
+            router.push({ name: 'account' })
         }
     } catch (error) {
         console.error(error)
