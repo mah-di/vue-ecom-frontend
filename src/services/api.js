@@ -1,5 +1,6 @@
 import axios from "axios"
 import useAuthStore from "@/stores/authStore"
+import { useToast } from "vue-toastification"
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_ENDPOINT
@@ -23,6 +24,9 @@ api.interceptors.response.use((response) => {
     return response
 }, (error) => {
     if (error.response && error.response.status === 401) {
+        const toast = useToast()
+        toast.error('Session expired. Please login again.')
+
         const authStore = useAuthStore()
         authStore.logout()
     }

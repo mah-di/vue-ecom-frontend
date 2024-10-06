@@ -6,9 +6,11 @@ import useAuthStore from '@/stores/authStore';
 import { useRouter } from 'vue-router';
 import api from '@/services/api';
 import PageLoader from './PageLoader.vue';
+import { useToast } from 'vue-toastification';
 
 const router = useRouter()
 const authStore = useAuthStore()
+const toast = useToast()
 
 const props = defineProps({
     product: Object,
@@ -70,15 +72,24 @@ const images = computed(() => {
 const activeImg = ref(images.value[0])
 
 const updateWishlist = async (id) => {
-    if (!authStore.isAuthenticated)
+    if (!authStore.isAuthenticated) {
+        toast.error('Please login first.')
         return router.push({ name: 'login' })
+    }
 
-    await authStore.updateWishlist(id)
+    const response = await authStore.updateWishlist(id)
+
+    if (response.status === "success")
+        toast.success(response.message)
+    else
+        toast.error(response.message)
 }
 
 const addToCart = async () => {
-    if (!authStore.isAuthenticated)
+    if (!authStore.isAuthenticated) {
+        toast.error('Please login first.')
         return router.push({ name: 'login' })
+    }
 
     if (props.productDetail && !cart.size)
         return alert('Please select size')
@@ -91,10 +102,14 @@ const addToCart = async () => {
     try {
         const response = await api.post('/user/cart', cart)
 
-        if (response.data.status === "success")
+        if (response.data.status === "success") {
             stock.value = response.data.data.remaining_stock
-        else
+            toast.success(response.data.message)
+        }
+        else {
             stock.value = 0
+            toast.error(response.data.message)
+        }
 
         cart.qty = 1
     } catch (error) {

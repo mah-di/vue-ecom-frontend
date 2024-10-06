@@ -1,11 +1,18 @@
 <script setup>
 import api from '@/services/api';
 import { inject } from 'vue';
+import { useToast } from 'vue-toastification';
+
+const toast = useToast()
 
 const pageIsLoading = inject('pageIsLoading')
 
 const props = defineProps({
-    review: Object
+    review: Object,
+    handleLoading: {
+        type: Boolean,
+        default: false
+    }
 })
 
 const emit = defineEmits(['getReviewData'])
@@ -16,13 +23,18 @@ const submitReview = async () => {
     try {
         const response = await api.post(`/user/review`, props.review.content)
 
-        if (response.data.status === "success") {
-            emit('getReviewData')
-            closeReview()
-        }
+        if (response.data.status === "error")
+            return toast.error(response.data.message)
+
+        emit('getReviewData')
+        closeReview()
+        toast.success("Review saved successfully")
 
     } catch (error) {
         console.error(error)
+    } finally {
+        props.handleLoading &&
+            (pageIsLoading.value = false)
     }
 }
 

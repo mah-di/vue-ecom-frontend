@@ -1,6 +1,9 @@
 <script setup>
 import api from '@/services/api';
-import { computed, inject, reactive, watch } from 'vue';
+import { computed, inject, reactive } from 'vue';
+import { useToast } from 'vue-toastification';
+
+const toast = useToast()
 
 const pageIsLoading = inject('pageIsLoading')
 
@@ -21,7 +24,11 @@ const remove = async () => {
     pageIsLoading.value = true
 
     try {
-        await api.delete(`/user/cart/${ props.cartItem.id }`)
+        const response = await api.delete(`/user/cart/${ props.cartItem.id }`)
+
+        response.data.status === "success"
+            ? toast.success(response.data.message)
+            : toast.error(response.data.message)
     } catch (error) {
         console.error(error)
     } finally {
@@ -31,7 +38,7 @@ const remove = async () => {
 
 const total = computed(() => props.cartItem.discount ? props.cartItem.qty * props.cartItem.product.discount_price : props.cartItem.qty * props.cartItem.product.price)
 
-watch(cart, async () => {
+const updateCart = async () => {
     pageIsLoading.value = true
 
     try {
@@ -39,7 +46,11 @@ watch(cart, async () => {
 
         if (response.data.status === "error") {
             cart.qty = props.cartItem.qty
-            response.data.data.remaining_stock = 0
+            response.data.data = { remaining_stock: 0 }
+
+            toast.error(response.data.message)
+        } else {
+            toast.success(response.data.message)
         }
 
         emit('updateCart', props.cartItem.product_id, cart.qty, response.data.data.remaining_stock)
@@ -48,7 +59,7 @@ watch(cart, async () => {
     } finally {
         pageIsLoading.value = false
     }
-})
+}
 </script>
 
 <template>
@@ -69,9 +80,9 @@ watch(cart, async () => {
 
         <div class=" flex col-span-5 sm:col-span-2 justify-between mt-3 pt-6 border-t border-t-slate-50 sm:mt-0 sm:pt-0 sm:border-t-0">
             <div class="text-center block md:inline">
-                <button @click="cart.qty--" :disabled="cart.qty == 1" class="py-[4px] px-[6px] text-xs rounded-full border border-rose-600 hover:bg-rose-600 hover:text-white disabled:bg-slate-200 disabled:border-slate-200 disabled:text-inherit transition-all"><i class="pi pi-minus"></i></button>
+                <button @click="cart.qty-- && updateCart()" :disabled="cart.qty == 1" class="py-[4px] px-[6px] text-xs rounded-full border border-rose-600 hover:bg-rose-600 hover:text-white disabled:bg-slate-200 disabled:border-slate-200 disabled:text-inherit transition-all"><i class="pi pi-minus"></i></button>
                 <span class="w-16 text-center py-[4px] px-4 border border-rose-600 focus:outline-none rounded mx-2">{{ cart.qty }}</span>
-                <button @click="cart.qty++" :disabled="cartItem.product.stock === 0" class="py-[4px] px-[6px] text-xs rounded-full border border-rose-600 hover:bg-rose-600 hover:text-white disabled:bg-slate-200 disabled:border-slate-200 disabled:text-inherit transition-all"><i class="pi pi-plus"></i></button>
+                <button @click="cart.qty++ && updateCart()" :disabled="cartItem.product.stock === 0" class="py-[4px] px-[6px] text-xs rounded-full border border-rose-600 hover:bg-rose-600 hover:text-white disabled:bg-slate-200 disabled:border-slate-200 disabled:text-inherit transition-all"><i class="pi pi-plus"></i></button>
             </div>
             <i @click="remove" class="pi pi-trash text-xl text-rose-600 hover:text-rose-700 cursor-pointer transition-all"></i>
         </div>

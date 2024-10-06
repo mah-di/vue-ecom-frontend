@@ -20,7 +20,10 @@ const useAuthStore = defineStore('auth', () => {
     const requestOTP = async () => {
         try {
             const response = await api.post('/login', { email: state.email })
-            router.push({ name: 'verify' })
+
+            if (response.data.status === "success")
+                router.push({ name: 'verify' })
+
             return response.data
         } catch (error) {
             console.error(error)

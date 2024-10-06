@@ -4,11 +4,13 @@ import PageLoader from '@/components/PageLoader.vue';
 import api from '@/services/api';
 import useAuthStore from '@/stores/authStore';
 import { onMounted, provide, reactive, ref } from 'vue';
+import { useToast } from 'vue-toastification';
 
 const pageIsLoading = ref(true)
 provide('pageIsLoading', pageIsLoading)
 
 const authStore = useAuthStore()
+const toast = useToast()
 
 const profile = reactive({
     cus_name : null,
@@ -33,6 +35,8 @@ const getProfile = async () => {
         if (response.data.status === "success" && response.data.data) {
             Object.assign(profile, response.data.data)
         }
+        if (response.data.status === 'error')
+            toast.error("Unexpected error occurred, please try again")
     } catch (error) {
         console.error(error)
     } finally {
@@ -51,6 +55,10 @@ const save = async () => {
             Object.assign(profile, response.data.data)
 
             authStore.state.name = profile.cus_name
+
+            toast.success(response.data.message)
+        } else {
+            toast.error(response.data.message)
         }
     } catch (error) {
         console.error(error)

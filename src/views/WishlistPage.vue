@@ -4,6 +4,7 @@ import PageLoader from '@/components/PageLoader.vue';
 import api from '@/services/api';
 import useAuthStore from '@/stores/authStore';
 import { onMounted, provide, ref } from 'vue';
+import { useToast } from 'vue-toastification';
 
 const wishlist = ref([])
 const pageIsLoading = ref(true)
@@ -12,11 +13,15 @@ const plainBG = ref(true)
 provide('pageIsLoading', pageIsLoading)
 
 const authStore = useAuthStore()
+const toast = useToast()
 
 const get = async () => {
     pageIsLoading.value = true
     try {
         const response = await api.get('/user/wish')
+
+        if (response.data.status === 'error')
+            return toast.error("Unexpected error occurred, please try again")
 
         wishlist.value = response.data.data
     } catch (error) {
@@ -32,7 +37,11 @@ onMounted( async () => await get())
 const remove = async id => {
     pageIsLoading.value = true
 
-    await authStore.removeFromWishlist(id)
+    const data = await authStore.removeFromWishlist(id)
+
+    data.status === "success"
+        ? toast.success(data.message)
+        : toast.error(data.message)
 
     await get()
 
@@ -44,7 +53,11 @@ const clearWishlist = async () => {
 
     const data = await authStore.clearWishlist()
 
-    data.status === "success" && await get()
+    data.status === "success"
+        ? toast.success(data.message)
+        : toast.error(data.message)
+
+    await get()
 
     pageIsLoading.value = false
 }

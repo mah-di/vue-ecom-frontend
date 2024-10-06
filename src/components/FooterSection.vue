@@ -40,10 +40,10 @@
                 <div>
                     <h3 class="text-white text-2xl">Account</h3>
                     <div class="text-gray-300 py-6">
-                        <p class="py-1">Profile</p>
-                        <p class="py-1">Wish List</p>
-                        <p class="py-1">Cart</p>
-                        <p class="py-1">Order History</p>
+                        <router-link :to="{name: 'account'}" class="py-1 block hover:text-rose-600 transition-all">Profile</router-link>
+                        <router-link :to="{name: 'wishlist'}" class="py-1 block hover:text-rose-600 transition-all">Wish List</router-link>
+                        <router-link :to="{name: 'cart'}" class="py-1 block hover:text-rose-600 transition-all">Cart</router-link>
+                        <router-link :to="{name: 'order'}" class="py-1 block hover:text-rose-600 transition-all">Order History</router-link>
                     </div>
                 </div>
                 <div>
@@ -59,7 +59,7 @@
         <div class="py-6">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:flex md:justify-between text-center">
                 <div class="text-gray-300">
-                    <p>© 2024 All Rights Reserved by Apple Shop</p>
+                    <p>© 2024 All Rights Reserved By Iqbal Mahdi</p>
                 </div>
                 <div>
                     <p class="text-gray-300">
@@ -67,6 +67,8 @@
                         <span class="text-rose-600">VueJs</span> | 
                         <span class="text-rose-600">Laravel</span> | 
                         <span class="text-rose-600">Tailwind CSS</span> | 
+                        <span class="text-rose-600">Epic Spinners</span> | 
+                        <span class="text-rose-600">Vue Toastification</span> | 
                         <span class="text-rose-600">Prime Icons</span>
                     </p>
                 </div>

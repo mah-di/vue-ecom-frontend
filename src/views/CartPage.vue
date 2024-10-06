@@ -4,6 +4,9 @@ import ContentWrapper from '@/components/ContentWrapper.vue';
 import PageLoader from '@/components/PageLoader.vue';
 import api from '@/services/api';
 import { computed, onMounted, provide, reactive, ref } from 'vue';
+import { useToast } from 'vue-toastification';
+
+const toast = useToast()
 
 const pageIsLoading = ref(true)
 const plainBG = ref(true)
@@ -53,6 +56,10 @@ const clearCart = async () => {
 
     try {
         let response = await api.delete('/user/cart')
+
+        response.data.status === "success"
+            ? toast.success(response.data.message)
+            : toast.error(response.data.message)
 
         response.data.status === "success" && await get()
     } catch (error) {

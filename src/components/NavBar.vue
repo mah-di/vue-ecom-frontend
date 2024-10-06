@@ -3,7 +3,9 @@ import useAuthStore from '@/stores/authStore';
 import useCategoryStore from '@/stores/categoryStore';
 import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router';
+import { useToast } from 'vue-toastification';
 
+const toast = useToast()
 const route = useRoute()
 
 const openCategories = ref(false)
@@ -13,6 +15,8 @@ const searchVal = ref('')
 
 const categoryStore = useCategoryStore()
 const authStore = useAuthStore()
+
+const handleLogout = () => toast.info('You have been logged out.') && authStore.logout()
 
 onMounted(async () => await categoryStore.get())
 
@@ -36,7 +40,7 @@ watch(() => route.fullPath, () => {
 
                 <template v-if="authStore.isAuthenticated">
                     <router-link :to="{ name: 'account' }" class="px-4 py-2 hover:text-rose-600 hover:bg-slate-50 transition-all"><i class="pi pi-user text-sm mr-2"></i>Account</router-link>
-                    <button @click="authStore.logout" class="px-4 py-2 bg-rose-600 text-white hover:bg-rose-700 rounded cursor-pointer transition-all">Logout</button>
+                    <button @click="handleLogout" class="px-4 py-2 bg-rose-600 text-white hover:bg-rose-700 rounded cursor-pointer transition-all">Logout</button>
                 </template>
 
                 <router-link v-else :to="{ name: 'login' }" class="px-4 py-2 bg-rose-600 text-white hover:bg-rose-700 rounded cursor-pointer transition-all">Login</router-link>
@@ -69,7 +73,7 @@ watch(() => route.fullPath, () => {
                     </div>
                 </div>
                 <span @click="openSearch = true" class="px-4 py-2 hover:text-rose-600 block md:inline hover:bg-slate-50 cursor-pointer transition-all"><i class="pi pi-search text-sm mr-2"></i>Search</span>
-                <button v-if="authStore.isAuthenticated" @click="authStore.logout" class="w-full py-2 block md:hidden bg-rose-600 text-white hover:bg-rose-700 rounded cursor-pointer transition-all">Logout</button>
+                <button v-if="authStore.isAuthenticated" @click="handleLogout" class="w-full py-2 block md:hidden bg-rose-600 text-white hover:bg-rose-700 rounded cursor-pointer transition-all">Logout</button>
                 <router-link v-else :to="{ name: 'login' }" class="py-2 block md:hidden bg-rose-600 text-white hover:bg-rose-700 rounded cursor-pointer transition-all">Login</router-link>
             </div>
         </div>

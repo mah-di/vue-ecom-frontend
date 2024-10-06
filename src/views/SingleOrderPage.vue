@@ -158,7 +158,7 @@ onMounted( async () => {
                 </div>
             </div>
 
-            <ReviewModal :review="review" />
+            <ReviewModal :review="review" :handleLoading="true" />
         </template>
     </ContentWrapper>
 </template>
