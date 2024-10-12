@@ -13,8 +13,7 @@ defineProps({
 </script>
 
 <template>
-    <div v-if="pageIsLoading && plainBG" class="h-[100vh]"></div>
-    <div v-if="pageIsLoading" class="fixed z-[100] top-0 left-0 h-[100vh] w-[100vw] bg-white opacity-95 flex justify-center items-center text-center">
+    <div v-if="pageIsLoading" class="fixed z-[100] top-0 left-0 h-[100vh] w-[100vw] bg-white flex justify-center items-center text-center" :class="plainBG ? '' : 'opacity-95'">
         <SemipolarSpinner
             :animation-duration="2000"
             :size="65"

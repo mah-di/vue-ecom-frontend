@@ -4,10 +4,11 @@ import ContentWrapper from '@/components/ContentWrapper.vue';
 import PageLoader from '@/components/PageLoader.vue';
 import api from '@/services/api';
 import { computed, onMounted, provide, reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 
 const toast = useToast()
+const route = useRoute()
 const router = useRouter()
 
 const pageIsLoading = ref(true)
@@ -96,7 +97,10 @@ const checkout = async () => {
     }
 }
 
-onMounted( async () => await get())
+onMounted( async () => {
+    route.query.status === 'fail' && toast.error("Payment attempt was unsuccessful, please try again later.")
+    await get()
+})
 </script>
 
 <template>

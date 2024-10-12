@@ -64,7 +64,7 @@ const products = ref([])
 const isLoading = ref(true)
 const openFilter = ref(false)
 
-const endpoint = ref(`http://localhost:8000/api/product`)
+const endpoint = ref(`${ import.meta.env.VITE_API_ENDPOINT }/product`)
 
 const filters = reactive({
     q: route.query.q || null,
@@ -117,7 +117,7 @@ onBeforeRouteUpdate( async (to, from, next) => {
 
     const query = to.params.type === 'remark' ? to.params.type : `${ to.params.type }_id`
     filters[query] = to.params.identifier
-    endpoint.value =`http://localhost:8000/api/product`
+    endpoint.value = `${ import.meta.env.VITE_API_ENDPOINT }/product`
 
     return next()
 })

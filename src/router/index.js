@@ -1,12 +1,4 @@
-import PolicyPage from '@/views/PolicyPage.vue'
-import HomePage from '@/views/HomePage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import ListingPage from '@/views/ListingPage.vue'
-import ProductPage from '@/views/ProductPage.vue'
-import SearchPage from '@/views/SearchPage.vue'
-import LoginPage from '@/views/LoginPage.vue'
-import VerificationPage from '@/views/VerificationPage.vue'
-import ProfilePage from '@/views/ProfilePage.vue'
 import useAuthStore from '@/stores/authStore'
 
 const router = createRouter({
@@ -15,22 +7,22 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomePage
+      component: () => import('@/views/HomePage.vue')
     },
     {
       path: '/:policy',
       name: 'policy',
-      component: PolicyPage
+      component: () => import('@/views/PolicyPage.vue')
     },
     {
       path: '/:type/:identifier',
       name: 'listing',
-      component: ListingPage
+      component: () => import('@/views/ListingPage.vue')
     },
     {
       path: '/search',
       name: 'search',
-      component: SearchPage,
+      component: () => import('@/views/SearchPage.vue'),
       beforeEnter(to, from, next) {
         if (to.query.q)
           return next()
@@ -41,15 +33,15 @@ const router = createRouter({
     {
       path: '/product/:id',
       name: 'product',
-      component: ProductPage
+      component: () => import('@/views/ProductPage.vue')
     },
     {
       path: '/profile',
-      component: ProfilePage,
+      component: () => import('@/views/ProfilePage.vue'),
       meta: { requiresAuth: true },
       children: [
         {
-          path: '/',
+          path: 'detail',
           name: 'account',
           component: () => import('@/views/AccountPage.vue')
         },
@@ -83,7 +75,7 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: LoginPage,
+      component: () => import('@/views/LoginPage.vue'),
       beforeEnter(to, from, next) {
         const authStore = useAuthStore()
 
@@ -93,7 +85,7 @@ const router = createRouter({
     {
       path: '/verify',
       name: 'verify',
-      component: VerificationPage,
+      component: () => import('@/views/VerificationPage.vue'),
       beforeEnter(to, from, next) {
         const authStore = useAuthStore()
 
@@ -106,6 +98,11 @@ const router = createRouter({
         return next()
       }
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: '404',
+      component: () => import('@/views/NotFoundPage.vue')
+    }
   ],
   scrollBehavior(to, from, savedPosition) {
     return savedPosition ? savedPosition : { top: 0, left: 0 }

@@ -1,4 +1,8 @@
-<script setup></script>
+<script setup>
+import useAuthStore from '@/stores/authStore';
+
+const authStore = useAuthStore()
+</script>
 
 <template>
     <footer class="bg-slate-900">
@@ -40,10 +44,15 @@
                 <div>
                     <h3 class="text-white text-2xl">Account</h3>
                     <div class="text-gray-300 py-6">
-                        <router-link :to="{name: 'account'}" class="py-1 block hover:text-rose-600 transition-all">Profile</router-link>
-                        <router-link :to="{name: 'wishlist'}" class="py-1 block hover:text-rose-600 transition-all">Wish List</router-link>
-                        <router-link :to="{name: 'cart'}" class="py-1 block hover:text-rose-600 transition-all">Cart</router-link>
-                        <router-link :to="{name: 'order'}" class="py-1 block hover:text-rose-600 transition-all">Order History</router-link>
+                        <template v-if="authStore.isAuthenticated">
+                            <router-link :to="{name: 'account'}" class="py-1 block hover:text-rose-600 transition-all">Profile</router-link>
+                            <router-link :to="{name: 'wishlist'}" class="py-1 block hover:text-rose-600 transition-all">Wish List</router-link>
+                            <router-link :to="{name: 'cart'}" class="py-1 block hover:text-rose-600 transition-all">Cart</router-link>
+                            <router-link :to="{name: 'order'}" class="py-1 block hover:text-rose-600 transition-all">Order History</router-link>
+                        </template>
+                        <template v-else>
+                            <router-link :to="{name: 'login'}" class="py-1 block hover:text-rose-600 transition-all">Login</router-link>
+                        </template>
                     </div>
                 </div>
                 <div>

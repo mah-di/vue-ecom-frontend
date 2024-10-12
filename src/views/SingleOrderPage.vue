@@ -30,15 +30,22 @@ const review = reactive({
 })
 
 const getOrder = async () => {
+    let status = false
+
     try {
         const response = await api.get(`/invoice/${ orderId.value }`)
 
         state.order = response.data.data
+
+        status = response.data.data ? true : false
     } catch (error) {
         console.error(error)
     } finally {
         plainBG.value = false
+        !status && (pageIsLoading.value = false)
     }
+
+    return status
 }
 
 const getOrderDetail = async () => {
@@ -81,10 +88,7 @@ const openReview = async (item) => {
     }
 }
 
-onMounted( async () => {
-    await getOrder()
-    await getOrderDetail()
-})
+onMounted( async () => await getOrder() && await getOrderDetail())
 </script>
 
 <template>

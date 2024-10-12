@@ -9,8 +9,8 @@ const useAuthStore = defineStore('auth', () => {
     const state = reactive({
         id: null,
         name: null,
-        email: null,
-        otp: null,
+        email: 'jon@doe.com',
+        otp: '000000',
         authToken: null,
         wishlist: []
     })
@@ -156,6 +156,9 @@ const useAuthStore = defineStore('auth', () => {
 
     const logout = () => {
         Object.keys(state).forEach( key => state[key] = ( key === 'wishlist' ) ? [] : null )
+
+        state.email = 'jon@doe.com'
+        state.otp = '000000'
 
         router.push({ name: 'login' })
     }

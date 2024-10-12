@@ -121,7 +121,7 @@ const addToCart = async () => {
 </script>
 
 <template>
-    <PageLoader />
+    <PageLoader :plainBG="false" />
     <ContentWrapper>
         <div class="pb-12">
             <p class="text-slate-600 text-lg">

@@ -3,6 +3,11 @@ import ContentWrapper from '@/components/ContentWrapper.vue';
 import PageLoader from '@/components/PageLoader.vue';
 import api from '@/services/api';
 import { onMounted, provide, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import { useToast } from 'vue-toastification';
+
+const toast = useToast()
+const route = useRoute()
 
 const orders = ref([])
 const pageIsLoading = ref(true)
@@ -30,7 +35,11 @@ const getDate = (dt) => {
     return `${ date.getDate() } ${ date.toLocaleString('default', { month: 'short' }) } ${ date.getFullYear() } `
 }
 
-onMounted( async () => await get())
+onMounted( async () => {
+    route.query.status === 'success' && toast.success("Order placed successfully.")
+    await get()
+})
+
 </script>
 
 <template>
